@@ -14,43 +14,48 @@ test('test', async ({ page }) => {
     await page.getByRole('textbox', { name: 'Password:' }).fill('Geslo123.');
     
     // Use navigation-specific method for sign in button
-    await visual.highlightAndClickNavigation(page.getByRole('button', { name: 'Sign In' }));
+    await visual.highlightAndClick(page.getByRole('button', { name: 'Sign In' }));
     
     // Use navigation method for menu items that change pages
     await visual.highlightAndClickNavigation(page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Sales', exact: true }));
     await visual.highlightAndClickNavigation(page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Sales Orders, Record your' }));
     await visual.highlightAndClickNavigation(page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'New', exact: true }));
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for Customer' }));
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 10000' }));
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }));
+    
+    // Start persistent highlight for customer selection process
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for Customer' }), { persistentId: 'customer-selection' });
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 10000' }), { cleanAllPrevious: true });
+    
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }), { persistentId: 'item-no' });
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Select from full list' }));
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Search', exact: true }));
     
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }));
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }).fill('1936');
-    
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 1936-S' }));
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Location Code' }));
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Code, sorted in Ascending order SILVER' }));
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 1936-S' }), { cleanAllPrevious: true });
+
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Location Code' }), { persistentId: 'location-selection' });
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Code, sorted in Ascending order SILVER' }), { cleanAllPrevious: true });
     
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }));
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).fill('10');
+    
+    // Clean up highlights after quantity is set
+    await visual.removeHighlight(page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }));
     
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).press('ArrowLeft');
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Location Code' }).press('ArrowLeft');
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Description' }).press('ArrowLeft');
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Item Reference No.' }).press('ArrowLeft');
-    
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }));
+        
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }).press('ArrowDown');
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for No.' }));
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for No.' }), { persistentId: 'item-no-selection' });
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Select from full list' }));
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Search', exact: true }));
     
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }));
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }).fill('ser');
     
-    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order SER203' }));
+    await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order SER203' }), { cleanAllPrevious: true });
     
     await visual.highlightAndClick(page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }));
     await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).fill('1');

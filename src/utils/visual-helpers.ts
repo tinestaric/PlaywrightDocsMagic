@@ -6,9 +6,78 @@ import { Page, Locator } from '@playwright/test';
 
 export class VisualHelpers {
   private page: Page;
+  private activeHighlights: Set<string> = new Set();
+  private persistentLocators: Map<string, Locator> = new Map();
 
   constructor(page: Page) {
     this.page = page;
+  }
+
+  /**
+   * Highlights an element without clicking (for persistent highlighting)
+   */
+  async highlight(locator: Locator, options?: {
+    color?: string;
+    id?: string;
+  }) {
+    const { color = '#ff4444', id } = options || {};
+    
+    await locator.evaluate((element, { highlightColor, highlightId }) => {
+      const originalStyle = element.style.cssText;
+      element.style.cssText += `
+        border: 3px solid ${highlightColor} !important;
+        box-shadow: 0 0 15px ${highlightColor} !important;
+        transition: all 0.3s ease !important;
+        z-index: 9999 !important;
+        position: relative !important;
+      `;
+      
+      // Store original style and ID for cleanup
+      (element as any)._originalStyle = originalStyle;
+      if (highlightId) {
+        (element as any)._highlightId = highlightId;
+      }
+    }, { highlightColor: color, highlightId: id });
+
+    if (id) {
+      this.activeHighlights.add(id);
+      this.persistentLocators.set(id, locator);
+    }
+  }
+
+  /**
+   * Removes highlight from a specific element by ID
+   */
+  async removeHighlight(locator: Locator, id?: string) {
+    try {
+      await locator.evaluate((element, highlightId) => {
+        if ((element as any)._originalStyle !== undefined) {
+          // Only remove if ID matches or no ID specified
+          if (!highlightId || (element as any)._highlightId === highlightId) {
+            element.style.cssText = (element as any)._originalStyle;
+            delete (element as any)._originalStyle;
+            delete (element as any)._highlightId;
+          }
+        }
+      }, id, { timeout: 1000 });
+      
+      if (id) {
+        this.activeHighlights.delete(id);
+      }
+    } catch (error) {
+      // Element might be gone, ignore
+    }
+  }
+
+  /**
+   * Removes all active persistent highlights
+   */
+  async removeAllHighlights() {
+    for (const [id, locator] of this.persistentLocators) {
+      await this.removeHighlight(locator, id);
+    }
+    this.activeHighlights.clear();
+    this.persistentLocators.clear();
   }
 
   /**
@@ -19,9 +88,20 @@ export class VisualHelpers {
     duration?: number;
     clickDelay?: number;
     skipCleanup?: boolean;
+    persistentId?: string;
+    cleanAllPrevious?: boolean;
   }) {
-    const { color = '#ff4444', duration = 500, clickDelay = 200, skipCleanup = false } = options || {};
-    
+    const { color = '#ff4444', duration = 400, clickDelay = 200, skipCleanup = false, persistentId, cleanAllPrevious = false } = options || {};
+
+    // Use highlight method for persistent highlights
+    if (persistentId) {
+      await this.highlight(locator, { color, id: persistentId });
+      await this.page.waitForTimeout(duration);
+      await locator.click();
+      await this.page.waitForTimeout(clickDelay);
+      return;
+    }
+
     // Add highlight style to the element
     await locator.evaluate((element, highlightColor) => {
       const originalStyle = element.style.cssText;
@@ -40,22 +120,13 @@ export class VisualHelpers {
     // Wait for highlight to be visible
     await this.page.waitForTimeout(duration);
 
-    // Clean up before click if not skipping cleanup
-    if (!skipCleanup) {
-      try {
-        await locator.evaluate((element) => {
-          if ((element as any)._originalStyle !== undefined) {
-            element.style.cssText = (element as any)._originalStyle;
-            delete (element as any)._originalStyle;
-          }
-        }, { timeout: 1000 });
-      } catch (error) {
-        // Element might already be changing, proceed with click
-      }
-    }
-
     // Click the element
     await locator.click();
+
+    // Clean all previous highlights if requested
+    if (cleanAllPrevious) {
+      await this.removeAllHighlights();
+    }    
 
     // Wait a bit after click
     await this.page.waitForTimeout(clickDelay);
