@@ -32,6 +32,10 @@ if (!fs.existsSync(expectedVideoPath)) {
   process.exit(1);
 }
 
-const newFileName = `${testName}-${Date.now()}.webm`;
-fs.renameSync(expectedVideoPath, path.join(destinationDir, newFileName));
+const newFileName = `${testName}.webm`;
+const destinationPath = path.join(destinationDir, newFileName);
+if (fs.existsSync(destinationPath)) {
+  fs.unlinkSync(destinationPath); // Remove existing file
+}
+fs.renameSync(expectedVideoPath, destinationPath);
 console.log(`✅ Video moved to ${destinationDir}/${newFileName}`);

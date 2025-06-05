@@ -6,13 +6,13 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
     "test:record": "playwright codegen",
     "test:report": "playwright show-report",
     "test:video": "node scripts/run-and-archive.js",
-    "test:screenshot": "playwright test --screenshot=on",
-    "docs:generate": "node scripts/generate-docs.js",
-    "docs:update-screenshots": "node scripts/update-screenshots.js"
+    "test:screenshots": "node scripts/run-with-screenshots.js",
+    "test:full": "node scripts/run-with-screenshots-and-video.js",
+    "screenshots:clean": "node scripts/clean-screenshots.js",
+    "update-docs": "node scripts/update-docs.js"
   },
   "keywords": [
     "playwright",
