@@ -1,0 +1,37 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+    await page.goto('http://bc27/BC/SignIn?ReturnUrl=%2FBC%2F');
+    await page.getByRole('textbox', { name: 'User name:' }).click();
+    await page.getByRole('textbox', { name: 'User name:' }).fill('admin');
+    await page.getByRole('textbox', { name: 'Password:' }).click();
+    await page.getByRole('textbox', { name: 'Password:' }).fill('Geslo123.');
+    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Sales', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Sales Orders, Record your' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'New', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for Customer' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 10000' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Select from full list' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Search', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }).fill('1936');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order 1936-S' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Location Code' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Code, sorted in Ascending order SILVER' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).fill('10');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).press('ArrowLeft');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Location Code' }).press('ArrowLeft');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Description' }).press('ArrowLeft');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'Item Reference No.' }).press('ArrowLeft');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('combobox', { name: 'No.', exact: true }).press('ArrowDown');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Choose a value for No.' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'Select from full list' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('menuitem', { name: 'Search', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('searchbox', { name: 'Search Select - Items' }).fill('ser');
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('button', { name: 'No., sorted in Ascending order SER203' }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).click();
+    await page.locator('iframe[title="undefined"]').contentFrame().getByRole('textbox', { name: 'Quantity', exact: true }).fill('1');
+});

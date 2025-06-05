@@ -1,0 +1,37 @@
+{
+  "name": "playwright-business-central-automation",
+  "version": "1.0.0",
+  "description": "Playwright automation framework for Business Central with advanced recording, documentation, and screenshot management",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:record": "playwright codegen",
+    "test:report": "playwright show-report",
+    "test:video": "node scripts/run-and-archive.js",
+    "test:screenshot": "playwright test --screenshot=on",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:update-screenshots": "node scripts/update-screenshots.js"
+  },
+  "keywords": [
+    "playwright",
+    "business-central",
+    "automation",
+    "testing",
+    "documentation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "moment": "^2.29.4",
+    "sharp": "^0.32.6"
+  }
+}
