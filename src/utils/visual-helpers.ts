@@ -198,6 +198,14 @@ export class VisualHelpers {
   resetScreenshotCounter() {
     // No-op - keeping for backward compatibility
   }
+
+  /**
+   * Manually add or update a locator for cleanup tracking
+   */
+  async addToCleanupList(locator: Locator, id: string) {
+    this.activeHighlights.add(id);
+    this.persistentLocators.set(id, locator);
+  }
 }
 
 /**

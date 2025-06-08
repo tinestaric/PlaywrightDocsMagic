@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Central Assembly Order with Extended Text Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #4a9eff;
+            --accent-color: #00d4aa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
+            --background: #fafbfc;
+            --surface: #ffffff;
+            --border: #e1e5e9;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-bg);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .header p {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: white;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+        }
+
+        /* Navigation */
+        .nav-sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-sidebar.open {
+            left: 0;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            transform: scale(1.1);
+            background: var(--secondary-color);
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin-top: 60px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--gradient-accent);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 60px 0;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        .section {
+            background: var(--surface);
+            margin-bottom: 40px;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 20px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 40px 0 20px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        h3::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: var(--gradient-accent);
+            margin-right: 15px;
+            border-radius: 2px;
+        }
+
+        h4 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Video Player */
+        .video-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin: 30px 0;
+            background: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 102, 204, 0.1), rgba(74, 158, 255, 0.1));
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-container:hover .video-overlay {
+            opacity: 1;
+        }
+
+        /* Screenshots */
+        .screenshot-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-container img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Lists */
+        ol, ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        ol li, ul li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        ol li::marker {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        ul li::marker {
+            color: var(--accent-color);
+        }
+
+        /* Key Points Section */
+        .key-points {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .key-points ul li {
+            background: white;
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            list-style: none;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .key-points ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .features ul li {
+            background: white;
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            list-style: none;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .features ul li::before {
+            content: '★';
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid #16a34a;
+        }
+
+        .benefits ul li {
+            background: white;
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            list-style: none;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .benefits ul li::before {
+            content: '↗';
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Troubleshooting Section */
+        .troubleshooting {
+            background: linear-gradient(135deg, #fef7f0 0%, #fed7aa 100%);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .troubleshooting ul li {
+            background: white;
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            list-style: none;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .troubleshooting ul li::before {
+            content: '⚠';
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            color: #f59e0b;
+            font-size: 1.2rem;
+        }
+
+        /* Strong text styling */
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer em {
+            opacity: 0.8;
+            font-style: normal;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.2rem;
+                padding: 0 10px;
+            }
+
+            .section {
+                padding: 25px;
+                margin-bottom: 30px;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            h3 {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        /* Scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--gradient-accent);
+            z-index: 1002;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    
+    <button class="nav-toggle" onclick="toggleNav()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <nav class="nav-sidebar" id="navSidebar">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#overview" class="nav-link" onclick="closeNav()"><i class="fas fa-eye"></i> Overview</a></li>
+            <li class="nav-item"><a href="#video" class="nav-link" onclick="closeNav()"><i class="fas fa-play"></i> Video Recording</a></li>
+            <li class="nav-item"><a href="#login" class="nav-link" onclick="closeNav()"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li class="nav-item"><a href="#items" class="nav-link" onclick="closeNav()"><i class="fas fa-box"></i> Create Item</a></li>
+            <li class="nav-item"><a href="#extended-text" class="nav-link" onclick="closeNav()"><i class="fas fa-file-alt"></i> Extended Text</a></li>
+            <li class="nav-item"><a href="#assembly" class="nav-link" onclick="closeNav()"><i class="fas fa-cogs"></i> Assembly Order</a></li>
+            <li class="nav-item"><a href="#features" class="nav-link" onclick="closeNav()"><i class="fas fa-star"></i> Key Features</a></li>
+            <li class="nav-item"><a href="#benefits" class="nav-link" onclick="closeNav()"><i class="fas fa-chart-line"></i> Benefits</a></li>
+            <li class="nav-item"><a href="#troubleshooting" class="nav-link" onclick="closeNav()"><i class="fas fa-tools"></i> Troubleshooting</a></li>
+        </ul>
+    </nav>
+
+    <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
+
+    <header class="header">
+        <div class="container">
+            <h1>Business Central Assembly Order with Extended Text Guide</h1>
+            <p>This guide walks you through the complete process of creating an item with extended text and using it in an assembly order in Microsoft Dynamics 365 Business Central.</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="section" id="overview">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2>Overview</h2>
+                </div>
+                <p>The extended text assembly order process involves creating an item with "Automatic Ext. Texts" enabled, setting up extended text for that item, and then using the item in an assembly order where the extended text will automatically appear.</p>
+            </section>
+
+            <section class="section" id="video">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <h2>Video Recording</h2>
+                </div>
+                <div class="video-container">
+                    <video width="800" height="600" controls>
+                        <source src="videos/AddExtTextToAssemblyOrder.webm" type="video/webm">
+                        <p>Your browser doesn't support HTML5 video. You can <a href="videos/AddExtTextToAssemblyOrder.webm">download the video</a> instead.</p>
+                    </video>
+                    <div class="video-overlay"></div>
+                </div>
+                <p><em>This video recording demonstrates the entire process from login to creating an assembly order with extended text. You can follow along with the video while reading the step-by-step instructions below.</em></p>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-list-ol"></i>
+                    </div>
+                    <h2>Step-by-Step Process</h2>
+                </div>
+
+                <div id="login">
+                    <h3>1. Login to Business Central</h3>
+                    <p>Start by accessing the Business Central login page and entering your credentials.</p>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/login-complete.png" alt="Login Complete">
+                    </div>
+                </div>
+
+                <div id="items">
+                    <h3>2. Navigate to Items</h3>
+                    <p>Navigate to the Items section to create a new item with extended text capabilities.</p>
+                    <ol>
+                        <li>Click on the <strong>Sales</strong> menu item in the navigation</li>
+                        <li>Select <strong>Items</strong> from the submenu</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/items-menu-open.png" alt="Items Menu Open">
+                    </div>
+
+                    <h3>3. Create New Item</h3>
+                    <p>Create a new item that will support extended text.</p>
+                    <ol>
+                        <li>Click the <strong>New</strong> button to create a new item</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/new-item-selected.png" alt="New Item Selected">
+                    </div>
+                    <ol start="2">
+                        <li>Select the item template when prompted</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/new-item-template-selected.png" alt="New Item Template Selected">
+                    </div>
+
+                    <h3>4. Configure Item Settings</h3>
+                    <p>Set up the item with extended text capabilities.</p>
+                    <ol>
+                        <li>Click <strong>Show more</strong> to expand additional item options</li>
+                        <li>Enable the <strong>Automatic Ext. Texts</strong> checkbox - this is crucial for extended text functionality</li>
+                        <li>Enter a descriptive name: "Item with 'Automatic Ext. Texts' enabled"</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/item-created.png" alt="Item Created">
+                    </div>
+                    <p><em>Note: The item number is automatically generated and will be used later in the assembly order.</em></p>
+                </div>
+
+                <div id="extended-text">
+                    <h3>5. Set Up Extended Text</h3>
+                    <p>Configure the extended text that will appear on documents.</p>
+                    <ol>
+                        <li>Navigate to <strong>More options</strong> → <strong>Related</strong> → <strong>Item</strong> → <strong>Extended Texts</strong></li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/extended-texts-selected.png" alt="Extended Texts Selected">
+                    </div>
+                    <ol start="2">
+                        <li>Create a new extended text entry by pressing <strong>Alt+N</strong></li>
+                        <li>Enter the description: "Extended text enabled for assembly order"</li>
+                        <li>Fill in the text field with the same content: "Extended text enabled for assembly order"</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/extended-text-created.png" alt="Extended Text Created">
+                    </div>
+                </div>
+
+                <div id="assembly">
+                    <h3>6. Navigate to Assembly Orders</h3>
+                    <p>Now navigate to create an assembly order using the item with extended text.</p>
+                    <ol>
+                        <li>Use the <strong>Search</strong> function to find "assembly orders"</li>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/assembly-orders-selected.png" alt="Assembly Orders Selected">
+                    </div>
+
+                    <h3>7. Create Assembly Order</h3>
+                    <p>Create a new assembly order and add the item with extended text.</p>
+                    <ol>
+                        <li>Press <strong>Alt+N</strong> to create a new assembly order</li>
+                        <li>In the assembly order lines:</li>
+                        <ul>
+                            <li>Set the <strong>Type</strong> to "Item" (option 1)</li>
+                            <li>Enter the item number created earlier in the <strong>No.</strong> field</li>
+                            <li>The system will automatically populate the extended text</li>
+                        </ul>
+                    </ol>
+                    <div class="screenshot-container">
+                        <img src="screenshots/AddExtTextToAssemblyOrder/assembly-order-created.png" alt="Assembly Order Created">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section features" id="features">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h2>Key Features Demonstrated</h2>
+                </div>
+                <h4>Automatic Extended Text</h4>
+                <ul>
+                    <li><strong>Automatic Ext. Texts</strong> checkbox enables automatic insertion of extended text on documents</li>
+                    <li>When this option is enabled, extended text appears automatically when the item is used</li>
+                    <li>No manual intervention required during order creation</li>
+                </ul>
+                <h4>Extended Text Configuration</h4>
+                <ul>
+                    <li>Extended text can be set up with custom descriptions and content</li>
+                    <li>Text appears on assembly orders and other documents automatically</li>
+                    <li>Helps provide additional item information to users</li>
+                </ul>
+                <h4>Assembly Order Integration</h4>
+                <ul>
+                    <li>Extended text seamlessly integrates with assembly orders</li>
+                    <li>Provides enhanced documentation for assembly processes</li>
+                    <li>Improves clarity and reduces manual data entry</li>
+                </ul>
+            </section>
+
+            <section class="section key-points" id="key-points">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h2>Key Points to Remember</h2>
+                </div>
+                <ul>
+                    <li><strong>Enable Automatic Ext. Texts</strong>: This checkbox must be checked for extended text to appear automatically</li>
+                    <li><strong>Extended Text Setup</strong>: Configure extended text through Related → Item → Extended Texts</li>
+                    <li><strong>Assembly Order Usage</strong>: Extended text will automatically appear when the item is used in assembly orders</li>
+                    <li><strong>Item Number Tracking</strong>: The system-generated item number is used throughout the process</li>
+                </ul>
+            </section>
+
+            <section class="section benefits" id="benefits">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2>Benefits</h2>
+                </div>
+                <ul>
+                    <li><strong>Reduced Manual Entry</strong>: Extended text appears automatically, reducing data entry errors</li>
+                    <li><strong>Consistent Information</strong>: Same extended text appears across all documents using the item</li>
+                    <li><strong>Enhanced Documentation</strong>: Provides additional context for assembly operations</li>
+                    <li><strong>Process Efficiency</strong>: Streamlines assembly order creation with pre-configured text</li>
+                </ul>
+            </section>
+
+            <section class="section troubleshooting" id="troubleshooting">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h2>Troubleshooting</h2>
+                </div>
+                <ul>
+                    <li><strong>Extended text not appearing</strong>: Verify that "Automatic Ext. Texts" is enabled on the item</li>
+                    <li><strong>Text not saving</strong>: Ensure both Description and Text fields are filled in the Extended Text setup</li>
+                    <li><strong>Item not found</strong>: Double-check the item number when creating the assembly order</li>
+                    <li><strong>Assembly order issues</strong>: Verify the item type is set to "Item" in the assembly order lines</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><em>This documentation is automatically updated. Screenshots are refreshed each time the update-docs script is run, ensuring the documentation stays current with any UI changes.</em></p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        function toggleNav() {
+            const sidebar = document.getElementById('navSidebar');
+            const overlay = document.getElementById('navOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeNav() {
+            const sidebar = document.getElementById('navSidebar');
+            const overlay = document.getElementById('navOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // Progress bar
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        }
+
+        window.addEventListener('scroll', updateProgress);
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0s';
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

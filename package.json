@@ -6,7 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:record": "playwright codegen",
+    "test:record": "playwright codegen --viewport-size=1920,1080 http://bc27/BC/",
     "test:report": "playwright show-report",
     "test:video": "node scripts/run-and-archive.js",
     "test:screenshots": "node scripts/run-with-screenshots.js",

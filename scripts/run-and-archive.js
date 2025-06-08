@@ -8,7 +8,7 @@ if (!testFile) {
   process.exit(1);
 }
 
-const testName = path.basename(testFile).replace(/\.spec\.ts$/, '');
+const testName = path.basename(testFile, '.spec.ts');
 console.log(`📝 Extracted test name: ${testName}`);
 
 const outputDir = 'test-results';

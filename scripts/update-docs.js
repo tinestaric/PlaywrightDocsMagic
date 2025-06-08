@@ -10,7 +10,7 @@ if (!testFile) {
   process.exit(1);
 }
 
-const testName = path.basename(testFile).replace(/\.spec\.ts$/, '');
+const testName = path.basename(testFile, '.spec.ts');
 console.log(`📚 Updating documentation artifacts for: ${testName}`);
 
 const outputDir = 'test-results';
